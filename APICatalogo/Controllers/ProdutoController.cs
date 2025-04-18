@@ -84,7 +84,6 @@ namespace APICatalogo.Controllers
 
             var novoProdutoDto = _mapper.Map<ProdutoDTO>(novoProduto);
 
-
             return new CreatedAtRouteResult("ObterProduto", new
             { id = novoProdutoDto.ProdutoId }, novoProdutoDto);
         }
