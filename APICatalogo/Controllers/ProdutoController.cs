@@ -103,6 +103,7 @@ namespace APICatalogo.Controllers
             var produtoAtualizadoDto = _mapper.Map<ProdutoDTO>(produtoAtualizado);
             _unitOfWork.Commit();
 
+
             return Ok(produtoAtualizadoDto);
 
         }
