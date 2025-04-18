@@ -82,6 +82,7 @@ namespace APICatalogo.Controllers
             var novoProduto = _unitOfWork.ProdutoRepository.Create(produto);
             _unitOfWork.Commit();
 
+
             var novoProdutoDto = _mapper.Map<ProdutoDTO>(novoProduto);
 
             return new CreatedAtRouteResult("ObterProduto", new
