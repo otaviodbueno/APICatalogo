@@ -16,7 +16,7 @@ builder.Services.AddControllers(options =>
     options.Filters.Add(typeof(ApiExceptionFilter));
 }).AddJsonOptions(options =>
         options.JsonSerializerOptions
-.           ReferenceHandler = ReferenceHandler.IgnoreCycles); // Evitar referência cíclica, Categorias => Produtos => Categorias ....
+.           ReferenceHandler = ReferenceHandler.IgnoreCycles).AddNewtonsoftJson(); // Evitar referência cíclica, Categorias => Produtos => Categorias ....
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
