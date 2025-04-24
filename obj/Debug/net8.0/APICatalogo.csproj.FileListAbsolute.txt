@@ -114,3 +114,14 @@ C:\Projetos\APICatalogo\APICatalogo\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnaly
 C:\Projetos\APICatalogo\APICatalogo\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Projetos\APICatalogo\APICatalogo\bin\Debug\net8.0\AutoMapper.dll
 C:\Projetos\APICatalogo\APICatalogo\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+C:\Projetos\APICatalogo\obj\Debug\net8.0\APICatalogo.csproj.AssemblyReference.cache
+C:\Projetos\APICatalogo\obj\Debug\net8.0\APICatalogo.GeneratedMSBuildEditorConfig.editorconfig
+C:\Projetos\APICatalogo\obj\Debug\net8.0\APICatalogo.AssemblyInfoInputs.cache
+C:\Projetos\APICatalogo\obj\Debug\net8.0\APICatalogo.AssemblyInfo.cs
+C:\Projetos\APICatalogo\obj\Debug\net8.0\APICatalogo.csproj.CoreCompileInputs.cache
+C:\Projetos\APICatalogo\obj\Debug\net8.0\APICatalogo.MvcApplicationPartsAssemblyInfo.cs
+C:\Projetos\APICatalogo\obj\Debug\net8.0\APICatalogo.MvcApplicationPartsAssemblyInfo.cache
+C:\Projetos\APICatalogo\obj\Debug\net8.0\APICatalogo.sourcelink.json
+C:\Projetos\APICatalogo\obj\Debug\net8.0\APICatalogo.dll
+C:\Projetos\APICatalogo\obj\Debug\net8.0\refint\APICatalogo.dll
+C:\Projetos\APICatalogo\obj\Debug\net8.0\APICatalogo.pdb

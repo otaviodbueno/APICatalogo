@@ -4,6 +4,7 @@ using APICatalogo.DTO.Mappings;
 using APICatalogo.Filters;
 using APICatalogo.Models;
 using APICatalogo.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -37,33 +38,13 @@ namespace APICatalogo.Controllers
         }
 
 
-        //[HttpGet("Produtos")] // Apenas definição de rota, note que nao está entre {}
-        //public ActionResult<IEnumerable<Categoria>> GetCategoriasProdutos()
-        //{
-        //    _logger.LogInformation("### Executando Logger -> GetCategoriasProdutos");
-
-        //    return _categoriaRepository.
-        //        Include(p => p.Produtos).ToList();
-        //}
-
 
         [HttpGet]
+        [Authorize] // Adicionando o filtro de autenticação
         [ServiceFilter(typeof(ApiLoggingFilter))] // Adicionando o filtro de log
         public async Task<ActionResult<IEnumerable<CategoriaDTO>>> Get()
         {
             var categorias = await _unitOfWork.CategoriaRepository.GetAllAsync();
-
-            //var categoriasDto = new List<CategoriaDTO>();
-            //foreach (var categoria in categorias)
-            //{
-            //    CategoriaDTO categoriaDto = new CategoriaDTO
-            //    {
-            //        CategoriaId = categoria.CategoriaId,
-            //        Nome = categoria.Nome,
-            //        ImageUrl = categoria.ImageUrl
-            //    };
-            //    categoriasDto.Add(categoriaDto);
-            //}
 
             var categoriasDto = categorias.ToCategoriaDTOList();
             return Ok(categoriasDto);
@@ -80,13 +61,6 @@ namespace APICatalogo.Controllers
                 return NotFound("Categoria não encontrado! Verifique o Id");
             }
 
-            //var categoriaDto = new CategoriaDTO
-            //{
-            //    CategoriaId = categoria.CategoriaId,
-            //    Nome = categoria.Nome,
-            //    ImageUrl = categoria.ImageUrl
-            //};
-
             var categoriaDto = categoria.ToCategoriaDTO();
 
             return Ok(categoriaDto);
@@ -99,13 +73,6 @@ namespace APICatalogo.Controllers
             {
                 return BadRequest("Produto inválido!");
             }
-
-            //var categoria = new Categoria
-            //{
-            //    CategoriaId = categoriaDto.CategoriaId,
-            //    Nome = categoriaDto.Nome,
-            //    ImageUrl = categoriaDto.ImageUrl
-            //};
 
             var categoria = categoriaDto.ToCategoria();
 

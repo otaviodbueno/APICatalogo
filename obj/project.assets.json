@@ -2846,11 +2846,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Projetos\\APICatalogo\\APICatalogo\\APICatalogo.csproj",
+      "projectUniqueName": "C:\\Projetos\\APICatalogo\\APICatalogo.csproj",
       "projectName": "APICatalogo",
-      "projectPath": "C:\\Projetos\\APICatalogo\\APICatalogo\\APICatalogo.csproj",
+      "projectPath": "C:\\Projetos\\APICatalogo\\APICatalogo.csproj",
       "packagesPath": "C:\\Users\\otavi\\.nuget\\packages\\",
-      "outputPath": "C:\\Projetos\\APICatalogo\\APICatalogo\\obj\\",
+      "outputPath": "C:\\Projetos\\APICatalogo\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
