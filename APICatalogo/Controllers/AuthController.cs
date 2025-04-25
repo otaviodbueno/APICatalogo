@@ -1,6 +1,7 @@
 ﻿using APICatalogo.DTO;
 using APICatalogo.Models;
 using APICatalogo.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
@@ -31,7 +32,7 @@ public class AuthController : ControllerBase
 
 
     [HttpPost]
-    [Route("login")]
+    [Route("Login")]
     public async Task<IActionResult> Login([FromBody] LoginModel model)
     {
 
@@ -91,14 +92,14 @@ public class AuthController : ControllerBase
         {
             SecurityStamp = Guid.NewGuid().ToString(),
             UserName = model.UserName,
-            Email = model.UserName,
+            Email = model.Email,
         };
 
         var result = await _userManager.CreateAsync(user, model.Password!);
 
         if (!result.Succeeded)
         {
-            return BadRequest(new { message = "Erro ao criar usuário" });
+            return BadRequest(new { message = "Erro ao criar usuário, verifique se a senha é válida!" });
         }
 
         return Ok(new Response
@@ -108,7 +109,7 @@ public class AuthController : ControllerBase
         });
     }
 
-    [HttpP
+    [HttpPost]
     [Route("RefreshToken")]
     public async Task<IActionResult> RefreshToken([FromBody] TokenModel tokenModel)
     {
@@ -150,5 +151,22 @@ public class AuthController : ControllerBase
             acessToken = new JwtSecurityTokenHandler().WriteToken(newAcessToken),
             refreshToken = newRefreshToken
         });
+    }
+
+    [Authorize]
+    [HttpPost]
+    [Route("Revoke/{username}")]
+    public async Task<IActionResult> Revoke(string username)
+    {
+        var user = await _userManager.FindByNameAsync(username);
+        if (user is null)
+        {
+            return NotFound(new { message = "Usuário não encontrado" });
+        }
+        user.RefreshToken = null;
+
+        await _userManager.UpdateAsync(user);
+
+        return NoContent(); // Não tem conteúdo para retornar, mas a requisição foi bem sucedida
     }
 }
