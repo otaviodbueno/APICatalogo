@@ -18,16 +18,19 @@ public class AuthController : ControllerBase
     private readonly UserManager<ApplicationsUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IConfiguration _config;
+    private readonly ILogger<AuthController> _logger;
 
     public AuthController(ITokenService tokenService, 
         UserManager<ApplicationsUser> userManager, 
         RoleManager<IdentityRole> roleManager,
-        IConfiguration config)
+        IConfiguration config,
+        ILogger<AuthController> logger)
     {
         _tokenService = tokenService;
         _userManager = userManager;
         _roleManager = roleManager;
         _config = config;
+        _logger = logger;
     }
 
 
@@ -46,6 +49,7 @@ public class AuthController : ControllerBase
             {
                 new Claim(ClaimTypes.Name, user.UserName!),
                 new Claim(ClaimTypes.Email, user.Email!),
+                new Claim("id", user.UserName!),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
@@ -153,7 +157,7 @@ public class AuthController : ControllerBase
         });
     }
 
-    [Authorize]
+    [Authorize(Policy = "SuperAdminOnly")]
     [HttpPost]
     [Route("Revoke/{username}")]
     public async Task<IActionResult> Revoke(string username)
@@ -168,5 +172,62 @@ public class AuthController : ControllerBase
         await _userManager.UpdateAsync(user);
 
         return NoContent(); // Não tem conteúdo para retornar, mas a requisição foi bem sucedida
+    }
+
+    [HttpPost]
+    [Route("CreateRole")]
+    public async Task<IActionResult> CreateRole(string roleName)
+    {
+        var roleExist = await _roleManager.RoleExistsAsync(roleName);
+        if (roleExist)
+        {
+            _logger.LogWarning("Role já existe");
+        }
+
+        IdentityRole role = new()
+        {
+            Name = roleName
+        };
+
+        var result = await _roleManager.CreateAsync(role);
+        if (!result.Succeeded)
+        {
+            _logger.LogWarning("Erro ao criar role");
+            return BadRequest();
+        }
+
+        _logger.LogWarning("Role criada!");
+        return Ok(new Response
+        {
+            Status = "Success",
+            Message = "Role criada com sucesso"
+        });
+    }
+
+    [HttpPost]
+    [Authorize(Policy = "SuperAdminOnly")]
+    [Route("AddRoleToUser")]
+    public async Task<IActionResult> AddRoleToUser(string email, string roleName)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user is null)
+        {
+            _logger.LogWarning("Usuário não encontrado");
+            return NotFound();
+        }
+        var roleExist = await _roleManager.RoleExistsAsync(roleName);
+        if (!roleExist)
+        {
+            _logger.LogWarning("Role não existe");
+            return NotFound();
+        }
+        var result = await _userManager.AddToRoleAsync(user, roleName);
+        if (!result.Succeeded)
+        {
+            return BadRequest();
+        }
+
+        _logger.LogWarning("Role adicionada ao usuário com sucesso");
+        return Ok();
     }
 }

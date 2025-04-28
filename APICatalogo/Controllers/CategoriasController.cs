@@ -105,6 +105,7 @@ namespace APICatalogo.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(Policy = "AdminOnly")] // Adicionando o filtro de autorização
         public async Task<ActionResult<CategoriaDTO>> Delete(int id)
         {
             var categoria = await _unitOfWork.CategoriaRepository.GetAsync(c => c.CategoriaId == id);
