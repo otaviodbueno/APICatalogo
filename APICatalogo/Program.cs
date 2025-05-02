@@ -24,6 +24,18 @@ builder.Services.AddControllers(options =>
 .           ReferenceHandler = ReferenceHandler.IgnoreCycles).AddNewtonsoftJson(); // Evitar referência cíclica, Categorias => Produtos => Categorias ....
 
 
+var OrigensComAcessoPermitido = "_origensComAcessoPermitido";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: OrigensComAcessoPermitido,
+                      builder =>
+                      {
+                          builder.WithOrigins("http://www.apirequest.io");
+                      });
+});
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -134,6 +146,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+
+app.UseCors(OrigensComAcessoPermitido);
 
 app.UseAuthorization();
 
