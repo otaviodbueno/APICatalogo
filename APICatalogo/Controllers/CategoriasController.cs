@@ -7,6 +7,7 @@ using APICatalogo.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using System.Data.SqlTypes;
 
@@ -14,6 +15,7 @@ namespace APICatalogo.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableRateLimiting("fixedwindow")] 
     public class CategoriasController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;

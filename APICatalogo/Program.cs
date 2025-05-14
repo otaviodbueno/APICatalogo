@@ -7,6 +7,7 @@ using APICatalogo.Repository;
 using APICatalogo.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
@@ -121,6 +122,17 @@ builder.Services.AddAuthorization(options =>
 });
 
 
+builder.Services.AddRateLimiter(rateLimitOptions =>
+{
+    rateLimitOptions.AddFixedWindowLimiter(policyName: "fixedwindow", options =>
+    {
+        options.PermitLimit = 1; // Número máximo de requisições permitidas
+        options.Window = TimeSpan.FromSeconds(5); // Tempo de espera para nova requisição
+        options.QueueLimit = 0; // Número máximo de requisições na fila
+    });
+    //rateLimitOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests; // Código de status para requisições rejeitadas
+});
+
 builder.Services.AddScoped<ApiLoggingFilter>();
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
@@ -148,6 +160,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+
+app.UseRateLimiter();
 
 app.UseCors(OrigensComAcessoPermitido);
 
