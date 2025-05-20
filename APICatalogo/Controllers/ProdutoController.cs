@@ -62,6 +62,11 @@ namespace APICatalogo.Controllers
         [HttpGet("{id}", Name = "ObterProduto")]
         public async Task<ActionResult<ProdutoDTO>> Get(int id)
         {
+            if(id == null || id <= 0)
+            {
+                return BadRequest("Id inválido!");
+            }
+
             var produto = await _unitOfWork.ProdutoRepository.GetAsync(c => c.ProdutoId == id);
 
             if (produto is null)
