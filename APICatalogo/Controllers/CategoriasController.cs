@@ -4,11 +4,13 @@ using APICatalogo.DTO.Mappings;
 using APICatalogo.Filters;
 using APICatalogo.Models;
 using APICatalogo.Repository;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using System.Data.SqlTypes;
 
 namespace APICatalogo.Controllers
@@ -21,6 +23,9 @@ namespace APICatalogo.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _configuration;
         private readonly ILogger _logger;
+
+        private readonly IMemoryCache _memoryCache;
+        private const string CacheCategoriasKey = "CacheKategorias";
 
         public CategoriasController(IUnitOfWork uof, IConfiguration configuration
             , ILogger<CategoriasController> logger)
@@ -42,14 +47,31 @@ namespace APICatalogo.Controllers
 
 
         [HttpGet]
-        [Authorize] // Adicionando o filtro de autenticação
+        //[Authorize] // Adicionando o filtro de autenticação
         [ServiceFilter(typeof(ApiLoggingFilter))] // Adicionando o filtro de log
         public async Task<ActionResult<IEnumerable<CategoriaDTO>>> Get()
         {
-            var categorias = await _unitOfWork.CategoriaRepository.GetAllAsync();
+            if(!_memoryCache.TryGetValue(CacheCategoriasKey, out IEnumerable<Categoria>? categoria))
+            {
+                var categorias = await _unitOfWork.CategoriaRepository.GetAllAsync();
 
-            var categoriasDto = categorias.ToCategoriaDTOList();
-            return Ok(categoriasDto);
+                if (categorias is not null && categorias.Any())
+                {
+                    var cacheEntryOptions = new MemoryCacheEntryOptions() // Armazena em cache
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30),
+                        Priority = CacheItemPriority.High,
+                        SlidingExpiration = TimeSpan.FromSeconds(15)
+                    };
+                }
+                else
+                {
+                    var categoriasDto = categorias.ToCategoriaDTOList();
+                    return Ok(categoriasDto);
+                }
+            }
+
+            return Ok(categoria); // retorna em cache
 
         }
 

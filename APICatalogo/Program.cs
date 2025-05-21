@@ -148,6 +148,9 @@ builder.Logging.AddProvider(new CustomLoggerProvider(
 
 builder.Services.AddAutoMapper(typeof(ProdutoDTOMappingProfile));
 
+builder.Services.AddMemoryCache();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
